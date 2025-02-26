@@ -42,11 +42,11 @@ def download_arxiv_source(arxiv_id, temp_dir):
     try:
         urllib.request.urlretrieve(source_url, tar_path)
     except urllib.error.URLError as e:
-        raise Exception(f"Failed to download arXiv source: {e}")
+        raise RuntimeError(f"Failed to download arXiv source: {e}")
     
     # Verify the downloaded file is a valid tarball
     if not tarfile.is_tarfile(tar_path):
-        raise Exception(f"Downloaded file is not a valid tar archive")
+        raise RuntimeError(f"Downloaded file is not a valid tar archive")
     
     # Extract the tarball
     extract_dir = os.path.join(temp_dir, "source")
@@ -56,7 +56,7 @@ def download_arxiv_source(arxiv_id, temp_dir):
         with tarfile.open(tar_path, "r:gz") as tar:
             tar.extractall(path=extract_dir)
     except tarfile.ReadError as e:
-        raise Exception(f"Failed to extract tar archive: {e}")
+        raise RuntimeError(f"Failed to extract tar archive: {e}")
     
     return extract_dir
 
@@ -89,22 +89,22 @@ def find_main_tex_file(source_dir):
 
 def expand_latex(main_file, clean=False):
     """Use latexpand to recursively include all files."""
+    # Get the directory of the main file to use as the working directory
+    main_dir = os.path.dirname(os.path.abspath(main_file))
+    
+    # Build the command with the appropriate options
+    cmd = ["latexpand", "--verbose"]  # Add verbose flag for debugging
+    
+    # Add option to keep comments if not cleaning
+    if not clean:
+        cmd.append("--keep-comments")
+        
+    # Add the main file path
+    cmd.append(main_file)
+    
+    print(f"Running: {' '.join(cmd)} in directory {main_dir}", file=sys.stderr)
+    
     try:
-        # Get the directory of the main file to use as the working directory
-        main_dir = os.path.dirname(os.path.abspath(main_file))
-        
-        # Build the command with the appropriate options
-        cmd = ["latexpand", "--verbose"]  # Add verbose flag for debugging
-        
-        # Add option to keep comments if not cleaning
-        if not clean:
-            cmd.append("--keep-comments")
-            
-        # Add the main file path
-        cmd.append(main_file)
-        
-        print(f"Running: {' '.join(cmd)} in directory {main_dir}", file=sys.stderr)
-        
         # Run latexpand in the directory of the main file to ensure relative paths work
         result = subprocess.run(
             cmd, 
@@ -123,21 +123,9 @@ def expand_latex(main_file, clean=False):
     except subprocess.CalledProcessError as e:
         print(f"Error running latexpand: {e}", file=sys.stderr)
         print(f"Error output: {e.stderr}", file=sys.stderr)
-        sys.exit(1)  # Exit immediately on latexpand error
+        raise RuntimeError(f"Failed to expand LaTeX: {e}")
     except FileNotFoundError:
         print("Error: 'latexpand' command not found. Please install it first.", file=sys.stderr)
         print("On Debian/Ubuntu: sudo apt-get install texlive-extra-utils", file=sys.stderr)
         print("On macOS with Homebrew: brew install texlive", file=sys.stderr)
-        sys.exit(1)
-
-
-def clean_latex(content):
-    """Remove comments and unnecessary content from LaTeX."""
-    # Remove comments (lines starting with %)
-    content = re.sub(r'(?m)^%.*$', '', content)
-    content = re.sub(r'(?<!\\)%.*$', '', content)
-    
-    # Remove consecutive empty lines
-    content = re.sub(r'\n\s*\n\s*\n+', '\n\n', content)
-    
-    return content
+        raise RuntimeError("'latexpand' command not found")

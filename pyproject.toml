@@ -20,23 +20,30 @@ classifiers = [
     "Topic :: Text Processing :: Markup :: LaTeX",
     "Topic :: Scientific/Engineering",
 ]
-dependencies = []  # No Python package dependencies
+dependencies = ["requests>=2.25.0"]  # Added requests for better HTTP handling
 
 [project.urls]
 "Homepage" = "https://github.com/zenna/arxiv-to-prompt"
 "Bug Tracker" = "https://github.com/zenna/arxiv-to-prompt/issues"
+"Documentation" = "https://github.com/zenna/arxiv-to-prompt#readme"
 
 [project.scripts]
 arxiv-to-prompt = "arxiv_to_prompt.cli:main"
 
 [project.optional-dependencies]
 dev = [
-    "pytest",
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
     "black",
     "isort",
     "build",
     "twine",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
 
 # Note: The latexpand tool is a command-line utility that needs to be installed
 # separately on the system, typically via the texlive-extra-utils package
