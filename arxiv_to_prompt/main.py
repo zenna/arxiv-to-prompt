@@ -111,7 +111,8 @@ def expand_latex(main_file, clean=False):
             capture_output=True, 
             text=True, 
             check=True,
-            cwd=main_dir  # Set working directory to the main file's directory
+            cwd=main_dir,  # Set working directory to the main file's directory
+            timeout=60  # Add timeout
         )
         
         # Print some diagnostics

@@ -6,6 +6,7 @@ Command-line interface for arxiv-to-prompt.
 import sys
 import argparse
 import tempfile
+import subprocess
 from .main import (
     extract_arxiv_id,
     download_arxiv_source, 
@@ -14,7 +15,23 @@ from .main import (
     clean_latex
 )
 
+def check_dependencies():
+    """Check if required external dependencies are installed."""
+    try:
+        subprocess.run(["latexpand", "--help"], 
+                      stdout=subprocess.PIPE, 
+                      stderr=subprocess.PIPE, 
+                      check=False)
+    except FileNotFoundError:
+        print("Error: 'latexpand' command not found. Please install it first.", file=sys.stderr)
+        print("On Debian/Ubuntu: sudo apt-get install texlive-extra-utils", file=sys.stderr)
+        print("On macOS with Homebrew: brew install texlive", file=sys.stderr)
+        sys.exit(1)
+
 def main():
+    # Check dependencies first
+    check_dependencies()
+    
     parser = argparse.ArgumentParser(description="Extract and expand LaTeX source from arXiv papers")
     parser.add_argument("identifier", help="arXiv URL, ID, or PDF link")
     parser.add_argument("--clean", action="store_true", help="Clean LaTeX output (remove comments, etc.)")

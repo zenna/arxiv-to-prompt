@@ -23,8 +23,8 @@ classifiers = [
 dependencies = []  # No Python package dependencies
 
 [project.urls]
-"Homepage" = "https://github.com/yourusername/arxiv-to-prompt"
-"Bug Tracker" = "https://github.com/yourusername/arxiv-to-prompt/issues"
+"Homepage" = "https://github.com/zenna/arxiv-to-prompt"
+"Bug Tracker" = "https://github.com/zenna/arxiv-to-prompt/issues"
 
 [project.scripts]
 arxiv-to-prompt = "arxiv_to_prompt.cli:main"
