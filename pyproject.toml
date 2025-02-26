@@ -34,6 +34,8 @@ dev = [
     "pytest",
     "black",
     "isort",
+    "build",
+    "twine",
 ]
 
 # Note: The latexpand tool is a command-line utility that needs to be installed
