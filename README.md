@@ -34,7 +34,10 @@ arxiv-to-prompt 2402.02392
 arxiv-to-prompt 2402.02392 --clean
 
 # You can also use arXiv URLs
-arxiv-to-prompt https://arxiv.org/abs/2402.02392 --clean
+arxiv-to-prompt https://arxiv.org/abs/2411.02272 --clean
+
+# You can also use arXiv URLs
+arxiv-to-prompt https://arxiv.org/abs/2411.02272 --clean | pbcopy
 ```
 
 ### Python API
