@@ -1,11 +1,13 @@
 # arxiv-to-prompt
 
-Extract and expand LaTeX source from arXiv papers for LLM prompts.
+Extract and expand LaTeX source from arXiv papers into a string.  This is useful for passing a paper directly into an LLM as a prompt.
 
 ## Installation
 
+Clone and cd into the repository
+
 ```bash
-pip install arxiv-to-prompt
+pip install -e .
 ```
 
 ### Requirements
